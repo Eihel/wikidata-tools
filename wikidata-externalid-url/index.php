@@ -160,6 +160,12 @@ if (! empty($id) ) {
         break;
     }
     break;
+  case 7619: // The Cardinals of the Holy Roman Church ID
+    $cardinal_parts = split(":", $id);
+    $identifier = $cardinal_parts[0];
+    $name = $cardinal_parts[1];
+    $link_string = "http://webdept.fiu.edu/~mirandas/bios$identifier.htm#$name";
+    break;
   default:
     if (! empty($exp) ) {
       preg_match('/'.$exp.'/', $id, $a);
