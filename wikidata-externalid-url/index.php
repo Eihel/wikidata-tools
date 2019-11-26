@@ -11,10 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 // See https://www.wikidata.org/wiki/MediaWiki:Gadget-AuthorityControl.js
 // for a number of the conversions done here.
-
 $property = isset($_REQUEST['p']) ? $_REQUEST['p'] : '' ;
 $url_prefix = isset($_REQUEST['url_prefix']) ? $_REQUEST['url_prefix'] : '' ;
 $url_suffix = isset($_REQUEST['url_suffix']) ? $_REQUEST['url_suffix'] : '' ;
@@ -181,7 +179,6 @@ if (! empty($id) ) {
 
     break ;
  }
-
  $redirect_url = $url_prefix . $link_string . $url_suffix ;
  header("Location: $redirect_url");
  exit();
@@ -235,10 +232,8 @@ print "<li>Gamepedia article ID - property 6623</li>";
 print "<li>ITF tournament ID - property 6841</li>";
 print "<li>Epitafier.se ID - property 6996</li>";
 print "<li>NLP ID - property 1695</li>";
+print "<li>The Cardinals of the Holy Roman Church ID - property 7619</li>";
 print "</ul>";
-
 print "The <a href=\"https://github.com/arthurpsmith/wikidata-tools/tree/master/wikidata-externalid-url\">source code for this service</a> is available under the <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache License, Version 2.0</a>." ;
-
 print "</body></html>";
-
 ?>
