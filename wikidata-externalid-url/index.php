@@ -19,6 +19,7 @@ $url_suffix = isset($_REQUEST['url_suffix']) ? $_REQUEST['url_suffix'] : '' ;
 $url = rawurldecode(isset($_REQUEST['url']) ? $_REQUEST['url'] : '') ;
 $exp = rawurldecode(isset($_REQUEST['exp']) ? $_REQUEST['exp'] : '');
 $id = rawurldecode(isset($_REQUEST['id']) ? $_REQUEST['id'] : '') ;
+
 if (! empty($id) ) {
  switch($property) {
   case 213: // ISNI
@@ -175,12 +176,14 @@ if (! empty($id) ) {
       $link_string = $id ;
     break;
     
+
     break ;
  }
  $redirect_url = $url_prefix . $link_string . $url_suffix ;
  header("Location: $redirect_url");
  exit();
 }
+
 print "<html><head><meta charset='utf-8'><title>Wikidata External ID redirector</title></head>" ;
 print "<body><h1>Wikidata External ID redirector</h1>" ;
 print "This accepts the following '?' parameters and returns a redirect constructed from them:" ;
@@ -190,9 +193,11 @@ print "<li> url_prefix - eg. http://isni.org/</li>";
 print "<li> url_suffix - eg. .html</li>";
 print "<li> id - the id value of this external id property for an entity of interest</li>";
 print "</ul>";
+
 $url   = "http://test.org/?vol=%1&item=%2";
 $id    = "113-1250";
 $exp = "(.*)-(.*)";
+
 print "This accepts the alternative '?' parameters:" ;
 print "<ul>" ;
 print "<li> url - url with parameters %1, %2... eg. <i>".$url."</i></li>";
@@ -205,7 +210,9 @@ print "<li> result  <a href='".$r."'>".$r."</a></li>";
 print "</ul>";
 print "Note: all parameters should be url encoded.<br/>";
 print "Note: this script also URL-decodes the id value so that an id with several embedded parameters can be used as originally intended.";
+
 print "<p>An example: <a href=\"index.php?p=213&url_prefix=http://isni.org/&id=0000 0000 8045 6315\">http://tools.wmflabs.org/wikidata-externalid-url/?p=213&url_prefix=http://isni.org/&id=0000 0000 8045 6315</a>.</p>";
+
 print "<p>Currently supported id translations:</p>";
 print "<ul>";
 print "<li>ISNI - property 213</li>";
