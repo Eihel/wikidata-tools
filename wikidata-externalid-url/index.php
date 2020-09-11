@@ -139,12 +139,14 @@ if (! empty($id) ) {
     $page = implode(':', $gp_parts);
     $link_string = "https://$wiki.gamepedia.com/$page";
     break;
-  case 6841: // ITF tournament ID
-    $itf_parts = explode(":", $id);
-    $sex = $itf_parts[0];
-    $id = $itf_parts[1];
-    $link_string = "https://www.itftennis.com/procircuit/tournaments/$sex's-tournament/info.aspx?tournamentid=$id";
-    break;
+  // OBSOLETE
+  //case 6841: // ITF tournament ID
+  //  $itf_parts = explode(":", $id);
+  //  $sex = $itf_parts[0];
+  //  $id = $itf_parts[1];
+  //  $link_string = "https://www.itftennis.com/procircuit/tournaments/$sex's-tournament/info.aspx?tournamentid=$id";
+  //  break;
+  // OBSOLETE 
   case 6996: // Epitafier.se ID
     switch(substr($id, 0, 1)) {
       case 'B':
@@ -174,6 +176,12 @@ if (! empty($id) ) {
   case 7699: // LIH ID
     $link_string = preg_replace(array("/([[:lower:]])/","[\*]","[\+]","[\/]"), array("_$1_","-","__",","), $id);
     break ;
+  case XXXX: // SMCC ID (SAMPLE)
+    $smcc_parts = explode(":", $id);
+    $dir_type = $smcc_parts[0];
+    $id = $smcc_parts[1];
+    $link_string = "http://www.syromalabarchurch.in/$dir_type.php?id=$id";
+    break;
   default:
     if (! empty($exp) ) {
       preg_match('/'.$exp.'/', $id, $a);
@@ -241,10 +249,11 @@ print "<li>Mastodon - property 4033</li>";
 print "<li>UOL Brazil election id - property 5892</li>";
 print "<li>Swedish Organization Number - property 6460</li>";
 print "<li>Gamepedia article ID - property 6623</li>";
-print "<li>ITF tournament ID - property 6841</li>";
+//print "<li>ITF tournament ID - property 6841</li>";
 print "<li>Epitafier.se ID - property 6996</li>";
 print "<li>NLP ID - property 1695</li>";
 print "<li>VcBA ID - property 8034</li>";
+print "<li>SMCC ID - property XXXX</li>";
 print "</ul>";
 
 print "The <a href=\"https://github.com/arthurpsmith/wikidata-tools/tree/master/wikidata-externalid-url\">source code for this service</a> is available under the <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache License, Version 2.0</a>." ;
