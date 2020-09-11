@@ -11,8 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 // See https://www.wikidata.org/wiki/MediaWiki:Gadget-AuthorityControl.js
 // for a number of the conversions done here.
+
 $property = isset($_REQUEST['p']) ? $_REQUEST['p'] : '' ;
 $url_prefix = isset($_REQUEST['url_prefix']) ? $_REQUEST['url_prefix'] : '' ;
 $url_suffix = isset($_REQUEST['url_suffix']) ? $_REQUEST['url_suffix'] : '' ;
@@ -73,6 +75,13 @@ if (! empty($id) ) {
   case 919: // SOC code
     $link_string = str_replace("-", "", $id) ;
     break;
+  case 1207: // NUKAT
+    if (strlen($id) === 9) { // 'n' + 8 digits
+      $link_string = str_replace('n', 'n%20%20', $id);
+    } else {
+      $link_string = str_replace('n', 'n%20', $id);
+    }
+    break;
   case 1209: // CN
     if (substr($id, 3, 1)==="0") { # for newspapers
         $newspaper_id = str_replace("-", "", $id);
@@ -103,13 +112,14 @@ if (! empty($id) ) {
     $link_string = "https://msi.nga.mil/queryResults?publications/uscgll?volume=".$a[1]."&featureNumber=".$a[2]."&includeRemovals=false&output=html";
     break;    
   case 4033: // Mastodon address
-    $mastodon_parts = split("@", $id);
-    $m_user = $mastodon_parts[0];
-    $m_host = $mastodon_parts[1];
+    $mastodon_parts = array();
+    preg_match('/@?([^@]+)@(.*)/', $id, $mastodon_parts);
+    $m_user = $mastodon_parts[1];
+    $m_host = $mastodon_parts[2];
     $link_string = "http://$m_host/@$m_user";
     break;
   case 5892: // UOL Brazil election id
-    $uol_parts = split("/", $id);
+    $uol_parts = explode("/", $id);
     $uol_year = $uol_parts[0];
     $uol_first_code = $uol_parts[1];
     $uol_second_code = $uol_parts[2];
@@ -124,13 +134,13 @@ if (! empty($id) ) {
     $link_string = str_replace("-", "", $id) ;
     break;
   case 6623: // Gamepedia article ID
-    $gp_parts = split(":", $id);
-    $wiki = $gp_parts[0];
-    $page = $gp_parts[1];
+    $gp_parts = explode(":", $id);
+    $wiki = array_shift($gp_parts);
+    $page = implode(':', $gp_parts);
     $link_string = "https://$wiki.gamepedia.com/$page";
     break;
   case 6841: // ITF tournament ID
-    $itf_parts = split(":", $id);
+    $itf_parts = explode(":", $id);
     $sex = $itf_parts[0];
     $id = $itf_parts[1];
     $link_string = "https://www.itftennis.com/procircuit/tournaments/$sex's-tournament/info.aspx?tournamentid=$id";
@@ -158,12 +168,12 @@ if (! empty($id) ) {
         break;
     }
     break;
-  case 7619: // The Cardinals of the Holy Roman Church ID
-    $cardinal_parts = split(":", $id);
-    $identifier = $cardinal_parts[0];
-    $name = $cardinal_parts[1];
-    $link_string = "http://webdept.fiu.edu/~mirandas/bios$identifier.htm#$name";
-    break;
+  case 8034: // VcBA ID
+    $link_string = str_replace("/", "_", $id) ;
+    break ;
+  case 7699: // LIH ID
+    $link_string = preg_replace(array("/([[:lower:]])/","[\*]","[\+]","[\/]"), array("_$1_","-","__",","), $id);
+    break ;
   default:
     if (! empty($exp) ) {
       preg_match('/'.$exp.'/', $id, $a);
@@ -179,6 +189,7 @@ if (! empty($id) ) {
 
     break ;
  }
+
  $redirect_url = $url_prefix . $link_string . $url_suffix ;
  header("Location: $redirect_url");
  exit();
@@ -204,14 +215,14 @@ print "<li> url - url with parameters %1, %2... eg. <i>".$url."</i></li>";
 print "<li> exp - regular expression eg. <i>".$exp."</i></li>";
 print "<li> id - eg. <i>".$id."</i></li>";
 $p = "?url=".urlencode($url)."&exp=".urlencode($exp)."&id=".urlencode($id);
-print "<li> example <a href='index.php".$p."'>http://tools.wmflabs.org/wikidata-externalid-url/".$p."</a></li>";
+print "<li> example <a href='index.php".$p."'>https://wikidata-externalid-url.toolforge.org/".$p."</a></li>";
 $r = "http://test.org/?vol=113?item=1250";
 print "<li> result  <a href='".$r."'>".$r."</a></li>";
 print "</ul>";
 print "Note: all parameters should be url encoded.<br/>";
 print "Note: this script also URL-decodes the id value so that an id with several embedded parameters can be used as originally intended.";
 
-print "<p>An example: <a href=\"index.php?p=213&url_prefix=http://isni.org/&id=0000 0000 8045 6315\">http://tools.wmflabs.org/wikidata-externalid-url/?p=213&url_prefix=http://isni.org/&id=0000 0000 8045 6315</a>.</p>";
+print "<p>An example: <a href=\"index.php?p=213&url_prefix=http://isni.org/&id=0000 0000 8045 6315\">https://wikidata-externalid-url.toolforge.org/?p=213&url_prefix=http://isni.org/&id=0000 0000 8045 6315</a>.</p>";
 
 print "<p>Currently supported id translations:</p>";
 print "<ul>";
@@ -220,6 +231,7 @@ print "<li>IMDB - property 345</li>";
 print "<li>HURDAT - property 502</li>";
 print "<li>E number - property 628</li>";
 print "<li>SOC code - property 919</li>";
+print "<li>NUKAT - property 1207</li>";
 print "<li>CN - property 1209</li>";
 print "<li>TA98 - property 1323</li>";
 print "<li>CricketArchive - property 2698</li>";
@@ -232,8 +244,11 @@ print "<li>Gamepedia article ID - property 6623</li>";
 print "<li>ITF tournament ID - property 6841</li>";
 print "<li>Epitafier.se ID - property 6996</li>";
 print "<li>NLP ID - property 1695</li>";
-print "<li>The Cardinals of the Holy Roman Church ID - property 7619</li>";
+print "<li>VcBA ID - property 8034</li>";
 print "</ul>";
+
 print "The <a href=\"https://github.com/arthurpsmith/wikidata-tools/tree/master/wikidata-externalid-url\">source code for this service</a> is available under the <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache License, Version 2.0</a>." ;
+
 print "</body></html>";
+
 ?>
